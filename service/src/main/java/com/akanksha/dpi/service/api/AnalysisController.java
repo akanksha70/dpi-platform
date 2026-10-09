@@ -6,6 +6,7 @@ import com.akanksha.dpi.service.job.JobNotReadyException;
 import com.akanksha.dpi.service.job.JobService;
 import com.akanksha.dpi.service.job.JobStatus;
 import com.akanksha.dpi.service.job.RuleSpec;
+import com.akanksha.dpi.service.rules.RuleService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -30,9 +31,11 @@ import java.util.List;
 public class AnalysisController {
 
     private final JobService jobs;
+    private final RuleService storedRules;
 
-    public AnalysisController(JobService jobs) {
+    public AnalysisController(JobService jobs, RuleService storedRules) {
         this.jobs = jobs;
+        this.storedRules = storedRules;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -40,16 +43,19 @@ public class AnalysisController {
             @RequestParam("file") MultipartFile file,
             @RequestParam(name = "blockApp", required = false) List<String> blockApps,
             @RequestParam(name = "blockIp", required = false) List<String> blockIps,
-            @RequestParam(name = "blockDomain", required = false) List<String> blockDomains) throws IOException {
+            @RequestParam(name = "blockDomain", required = false) List<String> blockDomains,
+            @RequestParam(name = "applyStoredRules", defaultValue = "true") boolean applyStoredRules)
+            throws IOException {
 
         if (file.isEmpty()) {
             throw new InvalidInputException("No file uploaded, or the file is empty");
         }
-        RuleSpec rules = RuleSpec.of(blockIps, blockApps, blockDomains);
+        RuleSpec requested = RuleSpec.of(blockIps, blockApps, blockDomains);
+        RuleSpec effective = applyStoredRules ? storedRules.currentSpec().merge(requested) : requested;
 
         AnalysisJob job;
         try (InputStream in = file.getInputStream()) {
-            job = jobs.submit(file.getOriginalFilename(), in, rules);
+            job = jobs.submit(file.getOriginalFilename(), in, effective);
         }
         return ResponseEntity.accepted()
                 .location(URI.create("/api/analyses/" + job.id()))

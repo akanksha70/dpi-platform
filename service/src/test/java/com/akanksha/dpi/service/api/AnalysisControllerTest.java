@@ -32,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+   import com.akanksha.dpi.service.rules.BlockRuleRepository;
+   import com.akanksha.dpi.service.rules.RuleService;
+   import static org.mockito.Mockito.mock;
 
 class AnalysisControllerTest {
 
@@ -46,7 +49,7 @@ class AnalysisControllerTest {
     void setUp() throws Exception {
         executor = Executors.newFixedThreadPool(2);
         jobs = TestSupport.newJobService(tmp, executor);
-        mvc = MockMvcBuilders.standaloneSetup(new AnalysisController(jobs))
+        mvc = MockMvcBuilders.standaloneSetup(new AnalysisController(jobs, noStoredRules()))
                 .setControllerAdvice(new ApiExceptionHandler())
                 .build();
     }
@@ -55,6 +58,11 @@ class AnalysisControllerTest {
     void tearDown() {
         executor.shutdownNow();
     }
+
+           /** A RuleService whose database is a mock that always answers "no stored rules". */
+       private static RuleService noStoredRules() {
+           return new RuleService(mock(BlockRuleRepository.class));
+       }
 
     private static MockMultipartFile sample() throws IOException {
         return new MockMultipartFile("file", "test_dpi.pcap", "application/octet-stream", TestSupport.samplePcap());
@@ -190,7 +198,7 @@ class AnalysisControllerTest {
                 return null;
             });
             JobService slowJobs = TestSupport.newJobService(tmp.resolve("slow"), single);
-            MockMvc slowMvc = MockMvcBuilders.standaloneSetup(new AnalysisController(slowJobs))
+            MockMvc slowMvc = MockMvcBuilders.standaloneSetup(new AnalysisController(slowJobs, noStoredRules()))
                     .setControllerAdvice(new ApiExceptionHandler())
                     .build();
 

@@ -36,6 +36,20 @@ public record RuleSpec(List<String> blockIps, List<String> blockApps, List<Strin
         return rules;
     }
 
+        /** Combines two rule sets, keeping order and dropping duplicates. */
+    public RuleSpec merge(RuleSpec other) {
+        return new RuleSpec(
+                union(blockIps, other.blockIps),
+                union(blockApps, other.blockApps),
+                union(blockDomains, other.blockDomains));
+    }
+
+    private static List<String> union(List<String> first, List<String> second) {
+        Set<String> out = new LinkedHashSet<>(first);
+        out.addAll(second);
+        return new ArrayList<>(out);
+    }
+
     private static List<String> cleanIps(List<String> raw) {
         Set<String> out = new LinkedHashSet<>();
         for (String s : nonNull(raw)) {

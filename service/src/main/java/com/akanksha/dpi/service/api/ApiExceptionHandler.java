@@ -3,6 +3,8 @@ package com.akanksha.dpi.service.api;
 import com.akanksha.dpi.service.job.InvalidInputException;
 import com.akanksha.dpi.service.job.JobNotFoundException;
 import com.akanksha.dpi.service.job.JobNotReadyException;
+import com.akanksha.dpi.service.rules.DuplicateRuleException;
+import com.akanksha.dpi.service.rules.RuleNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,13 +29,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return respond(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
-    @ExceptionHandler(JobNotFoundException.class)
-    ResponseEntity<ProblemDetail> notFound(JobNotFoundException e) {
+    @ExceptionHandler({JobNotFoundException.class, RuleNotFoundException.class})
+    ResponseEntity<ProblemDetail> notFound(RuntimeException e) {
         return respond(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
-    @ExceptionHandler(JobNotReadyException.class)
-    ResponseEntity<ProblemDetail> notReady(JobNotReadyException e) {
+    @ExceptionHandler({JobNotReadyException.class, DuplicateRuleException.class})
+    ResponseEntity<ProblemDetail> conflict(RuntimeException e) {
         return respond(HttpStatus.CONFLICT, e.getMessage());
     }
 
