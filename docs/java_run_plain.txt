@@ -1,0 +1,59 @@
+==================== PROCESSING REPORT ====================
+  Total packets                      77
+  Total bytes                      5738
+  TCP packets                        73
+  UDP packets                         4
+  Skipped (not IP/TCP/UDP)            0
+-----------------------------------------------------------
+  Forwarded                          77
+  Dropped                             0
+  Internal errors                     0
+-----------------------------------------------------------
+WORKER STATISTICS
+    Worker 0 processed               14
+    Worker 1 processed               18
+    Worker 2 processed               20
+    Worker 3 processed               25
+-----------------------------------------------------------
+APPLICATION BREAKDOWN (packets)
+  HTTPS            55   71.4%  ##############
+  DNS               4    5.2%  #
+  HTTP              2    2.6%  
+  Amazon            1    1.3%  
+  Apple             1    1.3%  
+  Cloudflare        1    1.3%  
+  Discord           1    1.3%  
+  Facebook          1    1.3%  
+  GitHub            1    1.3%  
+  Google            1    1.3%  
+  Instagram         1    1.3%  
+  Microsoft         1    1.3%  
+  Netflix           1    1.3%  
+  Spotify           1    1.3%  
+  Telegram          1    1.3%  
+  TikTok            1    1.3%  
+  Twitter/X         1    1.3%  
+  YouTube           1    1.3%  
+  Zoom              1    1.3%  
+-----------------------------------------------------------
+DETECTED DOMAINS
+  - discord.com -> Discord
+  - example.com -> HTTPS
+  - github.com -> GitHub
+  - httpbin.org -> HTTPS
+  - open.spotify.com -> Spotify
+  - twitter.com -> Twitter/X
+  - web.telegram.org -> Telegram
+  - www.amazon.com -> Amazon
+  - www.apple.com -> Apple
+  - www.cloudflare.com -> Cloudflare
+  - www.facebook.com -> Facebook
+  - www.google.com -> Google
+  - www.instagram.com -> Instagram
+  - www.microsoft.com -> Microsoft
+  - www.netflix.com -> Netflix
+  - www.tiktok.com -> TikTok
+  - www.youtube.com -> YouTube
+  - zoom.us -> Zoom
+
+Output written to: output_java.pcap

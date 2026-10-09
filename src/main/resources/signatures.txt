@@ -1,0 +1,21 @@
+
+# App signatures. The FIRST matching line wins, so put specific apps before general ones.
+# Format: APP_NAME: domain1, domain2
+# A domain matches itself and its subdomains: youtube.com matches www.youtube.com but not notyoutube.com.
+YOUTUBE: youtube.com, youtu.be, ytimg.com, googlevideo.com, youtube-nocookie.com
+GOOGLE: google.com, google.co.in, gstatic.com, googleapis.com, ggpht.com, gvt1.com, googleusercontent.com
+FACEBOOK: facebook.com, facebook.net, fbcdn.net, fb.com, fbsbx.com, meta.com
+INSTAGRAM: instagram.com, cdninstagram.com
+WHATSAPP: whatsapp.com, whatsapp.net, wa.me
+TWITTER: twitter.com, twimg.com, x.com, t.co
+NETFLIX: netflix.com, nflxvideo.net, nflximg.net, nflxext.com, nflxso.net
+AMAZON: amazon.com, amazon.in, amazonaws.com, cloudfront.net, media-amazon.com
+MICROSOFT: microsoft.com, microsoftonline.com, msn.com, office.com, office365.com, azure.com, azureedge.net, live.com, outlook.com, bing.com
+APPLE: apple.com, icloud.com, mzstatic.com, itunes.com
+TELEGRAM: telegram.org, telegram.me, t.me
+TIKTOK: tiktok.com, tiktokcdn.com, tiktokv.com, musical.ly, bytedance.com
+SPOTIFY: spotify.com, scdn.co
+ZOOM: zoom.us, zoom.com
+DISCORD: discord.com, discordapp.com, discord.gg
+GITHUB: github.com, githubusercontent.com, github.io
+CLOUDFLARE: cloudflare.com, cloudflare-dns.com, cloudflarestorage.com
