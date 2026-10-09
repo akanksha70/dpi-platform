@@ -10,7 +10,8 @@
   <packaging>pom</packaging>
   <name>dpi-platform</name>
 
-  <modules>
+   <modules>
     <module>engine</module>
+    <module>service</module>
   </modules>
 </project>
