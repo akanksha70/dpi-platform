@@ -3,6 +3,7 @@ package com.akanksha.dpi.service.api;
 import com.akanksha.dpi.service.job.InvalidInputException;
 import com.akanksha.dpi.service.job.JobNotFoundException;
 import com.akanksha.dpi.service.job.JobNotReadyException;
+import com.akanksha.dpi.service.job.OutputGoneException;
 import com.akanksha.dpi.service.rules.DuplicateRuleException;
 import com.akanksha.dpi.service.rules.RuleNotFoundException;
 import org.slf4j.Logger;
@@ -37,6 +38,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({JobNotReadyException.class, DuplicateRuleException.class})
     ResponseEntity<ProblemDetail> conflict(RuntimeException e) {
         return respond(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+        @ExceptionHandler(OutputGoneException.class)
+    ResponseEntity<ProblemDetail> gone(OutputGoneException e) {
+        return respond(HttpStatus.GONE, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

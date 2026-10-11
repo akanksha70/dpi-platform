@@ -2,9 +2,11 @@ package com.akanksha.dpi.service.config;
 
 import com.akanksha.dpi.classify.AppClassifier;
 import com.akanksha.dpi.service.job.JobService;
+import com.akanksha.dpi.service.job.JobStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
+@EnableScheduling
 public class EngineConfig {
 
     @Bean
@@ -28,11 +31,13 @@ public class EngineConfig {
         });
     }
 
-    @Bean
+    // initMethod runs once after the bean is built: it fails jobs left over from a previous run.
+    @Bean(initMethod = "recoverInterruptedJobs")
     JobService jobService(AppClassifier classifier,
                           ExecutorService jobExecutor,
+                          JobStore jobStore,
                           @Value("${dpi.storage-dir}") String storageDir,
                           @Value("${dpi.workers:4}") int workers) throws IOException {
-        return new JobService(classifier, jobExecutor, Path.of(storageDir), workers);
+        return new JobService(classifier, jobExecutor, jobStore, Path.of(storageDir), workers);
     }
 }

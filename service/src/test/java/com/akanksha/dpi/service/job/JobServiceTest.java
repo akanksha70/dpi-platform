@@ -1,6 +1,5 @@
 package com.akanksha.dpi.service.job;
 
-import com.akanksha.dpi.engine.FlowSummary;
 import com.akanksha.dpi.service.TestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,8 +53,8 @@ class JobServiceTest {
         assertEquals(JobStatus.COMPLETED, done.status(), done.error());
         assertEquals(77, done.report().totalPackets());
         assertEquals(77, done.report().forwarded());
-        assertTrue(Files.size(done.outputPath()) > 24);
-        assertFalse(Files.exists(done.inputPath()), "the uploaded input should be deleted after processing");
+        assertTrue(Files.size(jobs.outputFile(done)) > 24);
+        assertFalse(Files.exists(jobs.inputFile(done)), "the uploaded input should be deleted after processing");
     }
 
     @Test
@@ -67,7 +66,7 @@ class JobServiceTest {
         assertEquals(JobStatus.COMPLETED, done.status(), done.error());
         assertTrue(done.report().dropped() > 0);
         assertTrue(done.report().dropped() < 77);
-        for (FlowSummary f : done.report().flows()) {
+        for (ReportData.FlowView f : done.report().flows()) {
             if ("www.netflix.com".equals(f.sni()) || "www.microsoft.com".equals(f.sni())) {
                 assertEquals(0, f.droppedPackets(), f.sni() + " must not be dropped");
             }

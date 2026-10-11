@@ -4,6 +4,7 @@ import com.akanksha.dpi.classify.AppClassifier;
 import com.akanksha.dpi.service.job.AnalysisJob;
 import com.akanksha.dpi.service.job.JobService;
 import com.akanksha.dpi.service.job.JobStatus;
+import com.akanksha.dpi.service.job.InMemoryJobStore;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +22,8 @@ public final class TestSupport {
         }
     }
 
-    public static JobService newJobService(Path storageDir, ExecutorService executor) throws IOException {
-        return new JobService(AppClassifier.loadDefault(), executor, storageDir, 4);
+       public static JobService newJobService(Path storageDir, ExecutorService executor) throws IOException {
+        return new JobService(AppClassifier.loadDefault(), executor, new InMemoryJobStore(), storageDir, 4);
     }
 
     /** Polls until the job is COMPLETED or FAILED (at most 15 seconds). */

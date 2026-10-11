@@ -5,6 +5,8 @@ import com.akanksha.dpi.service.job.InvalidInputException;
 import com.akanksha.dpi.service.job.JobNotReadyException;
 import com.akanksha.dpi.service.job.JobService;
 import com.akanksha.dpi.service.job.JobStatus;
+import com.akanksha.dpi.service.job.OutputGoneException;
+import com.akanksha.dpi.service.job.ReportData;
 import com.akanksha.dpi.service.job.RuleSpec;
 import com.akanksha.dpi.service.rules.RuleService;
 import org.springframework.core.io.FileSystemResource;
@@ -24,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -65,7 +69,7 @@ public class AnalysisController {
     @GetMapping
     public List<JobView> list(@RequestParam(name = "limit", defaultValue = "20") int limit) {
         int n = Math.max(1, Math.min(limit, 100));
-        return jobs.recent(n).stream().map(JobView::of).toList();
+        return jobs.recent(n).stream().map(JobView::listItem).toList();
     }
 
     @GetMapping("/{id}")
@@ -74,23 +78,28 @@ public class AnalysisController {
     }
 
     @GetMapping("/{id}/report")
-    public ReportView report(@PathVariable("id") String id) {
+    public ReportData report(@PathVariable("id") String id) {
         AnalysisJob job = jobs.get(id);
         requireCompleted(job);
-        return ReportView.of(job.id(), job.report());
+        return job.report();
     }
 
     @GetMapping("/{id}/output")
     public ResponseEntity<Resource> output(@PathVariable("id") String id) {
         AnalysisJob job = jobs.get(id);
         requireCompleted(job);
+
+        Path file = jobs.outputFile(job);
+        if (!Files.isRegularFile(file)) {
+            throw new OutputGoneException();
+        }
         ContentDisposition disposition = ContentDisposition.attachment()
                 .filename("filtered-" + job.displayName())
                 .build();
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.tcpdump.pcap"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
-                .body(new FileSystemResource(job.outputPath()));
+                .body(new FileSystemResource(file));
     }
 
     private static void requireCompleted(AnalysisJob job) {
