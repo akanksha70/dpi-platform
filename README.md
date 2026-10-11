@@ -1,5 +1,7 @@
 # DPI Platform
 
+[![CI](https://github.com/akanksha70/dpi-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/akanksha70/dpi-platform/actions/workflows/ci.yml)
+
 A deep packet inspection (DPI) engine with a REST API, written in Java. Upload a packet capture
 (`.pcap`) and the service identifies which applications generated the traffic (YouTube, Netflix,
 GitHub, ...) from the domain names visible in TLS and HTTP handshakes, applies block rules, and
